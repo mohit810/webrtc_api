@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<head>
+    webrtc + socket.io
+</head>
+<body>
+<h1>WebRTC + Socket.io</h1>
+<div id="selectRoom">
+    <label>Type Room Name</label>
+    <input type="text" id="roomNumber"/>
+    <button id="goRoom">Go</button>
+</div>
+<div id="consultingRoom" style="display: none">
+    <video id="localVideo" autoplay></video>
+    <video id="remoteVideo" autoplay></video>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js"></script>
+<script src="main.js"></script>
+</body>
