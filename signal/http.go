@@ -6,7 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/pion/dtls/v2/examples/util"
 	"net/http"
-	"practice/channels/structs"
+	"practice/webrtc_api/structs"
 	"strconv"
 )
 

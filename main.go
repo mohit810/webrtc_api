@@ -6,8 +6,8 @@ import (
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v3"
 	"io"
-	"practice/channels/encryptor"
-	"practice/channels/signal"
+	"practice/webrtc_api/encryptor"
+	"practice/webrtc_api/signal"
 	"time"
 )
 
@@ -119,6 +119,52 @@ func main() { // nolint:gocognit
 
 	answerChan <- encryptor.Encode(*peerConnection.LocalDescription())
 
-	// Block forever
-	select {}
+	localTrack := <-localTrackChan
+	for {
+		fmt.Println("")
+		fmt.Println("Curl an base64 SDP to start sendonly peer connection")
+
+		recvOnlyOffer := webrtc.SessionDescription{}
+		encryptor.Decode(<-offerChan, &recvOnlyOffer)
+
+		// Create a new PeerConnection
+		peerConnection, err := api.NewPeerConnection(peerConnectionConfig)
+		if err != nil {
+			panic(err)
+		}
+
+		_, err = peerConnection.AddTrack(localTrack)
+		if err != nil {
+			panic(err)
+		}
+
+		// Set the remote SessionDescription
+		err = peerConnection.SetRemoteDescription(recvOnlyOffer)
+		if err != nil {
+			panic(err)
+		}
+
+		// Create answer
+		answer, err := peerConnection.CreateAnswer(nil)
+		if err != nil {
+			panic(err)
+		}
+
+		// Create channel that is blocked until ICE Gathering is complete
+		gatherComplete = webrtc.GatheringCompletePromise(peerConnection)
+
+		// Sets the LocalDescription, and starts our UDP listeners
+		err = peerConnection.SetLocalDescription(answer)
+		if err != nil {
+			panic(err)
+		}
+
+		// Block until ICE Gathering is complete, disabling trickle ICE
+		// we do this because we only can exchange one signaling message
+		// in a production application you should exchange ICE Candidates via OnICECandidate
+		<-gatherComplete
+
+		// Get the LocalDescription and take it to base64 so we can paste in browser
+		answerChan <- encryptor.Encode(*peerConnection.LocalDescription())
+	}
 }
