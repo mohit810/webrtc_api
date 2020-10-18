@@ -3,11 +3,12 @@ package signal
 import (
 	"encoding/json"
 	"flag"
-	"github.com/julienschmidt/httprouter"
-	"github.com/pion/dtls/v2/examples/util"
 	"net/http"
-	"practice/webrtc_api/structs"
 	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/mohit810/webrtc_api/structs"
+	"github.com/pion/dtls/v2/examples/util"
 )
 
 // HTTPSDPServer starts a HTTP Server that consumes SDPs

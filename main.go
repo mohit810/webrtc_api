@@ -3,12 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
+	"time"
+
+	"github.com/mohit810/webrtc_api/encryptor"
+	"github.com/mohit810/webrtc_api/signal"
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v3"
-	"io"
-	"practice/webrtc_api/encryptor"
-	"practice/webrtc_api/signal"
-	"time"
 )
 
 const (
